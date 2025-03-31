@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>내가 학씨인지 관식인지 알아보기</title>
+
+  <style>
+
+    body {
+
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+      background: linear-gradient(120deg, #f6d365, #fda085);
+
+      color: #333;
+
+      margin: 0;
+
+      padding: 0;
+
+    }
+
+    .container {
+
+      max-width: 700px;
+
+      margin: 0 auto;
+
+      padding: 40px 20px;
+
+      background: #fff;
+
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+      border-radius: 16px;
+
+      margin-top: 60px;
+
+    }
+
+    h1 {
+
+      text-align: center;
+
+      font-size: 2em;
+
+      margin-bottom: 30px;
+
+    }
+
+    .question {
+
+      margin-bottom: 25px;
+
+      padding: 15px;
+
+      background-color: #f9f9f9;
+
+      border-radius: 10px;
+
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+
+    }
+
+    .question p {
+
+      margin-bottom: 10px;
+
+      font-weight: bold;
+
+    }
+
+    label {
+
+      display: block;
+
+      margin: 6px 0;
+
+      cursor: pointer;
+
+    }
+
+    button {
+
+      display: block;
+
+      margin: 30px auto 0;
+
+      padding: 12px 24px;
+
+      background-color: #ff7f50;
+
+      color: #fff;
+
+      border: none;
+
+      border-radius: 8px;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      transition: background-color 0.3s ease;
+
+    }
+
+    button:hover {
+
+      background-color: #ff6333;
+
+    }
+
+    .result {
+
+      text-align: center;
+
+      font-size: 1.3em;
+
+      margin-top: 30px;
+
+      font-weight: bold;
+
+      color: #444;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>내가 학씨인지 관식인지 알아보기</h1>
+
+    <form id="quizForm">
+
+      <div class="questions" id="questions"></div>
+
+      <button type="submit">결과 보기</button>
+
+    </form>
+
+    <div class="result" id="result"></div>
+
+  </div>
+
+
+
+  <script>
+
+    const questions = [
+
+      "문제를 마주했을 때 나는?",
+
+      "누군가 내 마음을 몰라줄 때",
+
+      "사람들과 어울릴 때 나는",
+
+      "고향을 떠날 기회가 생기면",
+
+      "사랑을 표현할 때",
+
+      "위기 상황에서 나는",
+
+      "가장 소중한 가치는?",
+
+      "주변 사람이 나를 보면?",
+
+      "스트레스를 받으면",
+
+      "친구와 싸웠을 때",
+
+      "내가 꿈꾸는 인생은",
+
+      "갈등 상황에서 나는",
+
+      "사람을 믿는 편인가요?",
+
+      "리더와 서포터 중 나는",
+
+      "슬픔을 느낄 때 나는"
+
+    ];
+
+
+
+    const answers = [
+
+      ["감정적으로 격하게 반응한다.", "일단 침착하게 상황을 파악한다."],
+
+      ["말로 표현하고 싸우더라도 털고 간다.", "조용히 참고 스스로 해결하려 한다."],
+
+      ["주도적인 역할을 하고 싶다.", "조용히 챙기며 뒤에서 돕는 게 편하다."],
+
+      ["망설임 없이 도전한다.", "가족과 주변을 생각해 고민이 많다."],
+
+      ["솔직하고 적극적으로 표현한다.", "말보다 행동으로 보여주는 스타일이다."],
+
+      ["즉흥적이고 감정적으로 움직인다.", "계획적이고 신중하게 판단한다."],
+
+      ["나 자신과 내 꿈", "가족과 의리"],
+
+      ["불같고 강단 있는 사람", "믿음직스럽고 묵묵한 사람"],
+
+      ["티가 팍팍 난다.", "꾹꾹 눌러두는 편이다."],
+
+      ["먼저 다가가 화해를 시도한다.", "시간이 해결해주길 기다린다."],
+
+      ["세상이 내 이름을 기억하는 삶", "조용히 행복한 삶"],
+
+      ["대화를 통해 해결하려 든다.", "상대방을 이해하려 노력한다."],
+
+      ["신뢰는 쉽게 주지 않는다.", "기본적으로 사람을 믿는 편이다."],
+
+      ["리더가 더 잘 어울린다.", "서포터가 더 편하다."],
+
+      ["울고, 털어놓고, 잊는다.", "꾹 참았다가 혼자 조용히 운다."]
+
+    ];
+
+
+
+    const quizContainer = document.getElementById('questions');
+
+
+
+    questions.forEach((question, index) => {
+
+      const questionDiv = document.createElement('div');
+
+      questionDiv.classList.add('question');
+
+
+
+      const questionTitle = document.createElement('p');
+
+      questionTitle.innerHTML = `<strong>${index + 1}. ${question}</strong>`;
+
+      questionDiv.appendChild(questionTitle);
+
+
+
+      answers[index].forEach((answerText, i) => {
+
+        const label = document.createElement('label');
+
+        const input = document.createElement('input');
+
+        input.type = 'radio';
+
+        input.name = `q${index}`;
+
+        input.value = i === 0 ? 'A' : 'B';
+
+        input.required = true;
+
+        label.appendChild(input);
+
+        label.append(` ${answerText}`);
+
+        questionDiv.appendChild(label);
+
+        questionDiv.appendChild(document.createElement('br'));
+
+      });
+
+
+
+      quizContainer.appendChild(questionDiv);
+
+    });
+
+
+
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+
+      e.preventDefault();
+
+
+
+      let aCount = 0;
+
+      let bCount = 0;
+
+
+
+      for (let i = 0; i < questions.length; i++) {
+
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+
+        if (selected) {
+
+          if (selected.value === 'A') aCount++;
+
+          else bCount++;
+
+        }
+
+      }
+
+
+
+      const total = aCount + bCount;
+
+      const aPercent = Math.round((aCount / total) * 100);
+
+      const bPercent = 100 - aPercent;
+
+
+
+      const resultDiv = document.getElementById('result');
+
+      if (aPercent > bPercent) {
+
+        resultDiv.textContent = `당신은 ${aPercent}% 학씨에 가까운 사람이에요!`;
+
+      } else if (bPercent > aPercent) {
+
+        resultDiv.textContent = `당신은 ${bPercent}% 관식에 가까운 사람이에요!`;
+
+      } else {
+
+        resultDiv.textContent = `당신은 학씨와 관식의 성향이 50:50으로 균형 잡힌 타입이에요!`;
+
+      }
+
+    });
+
+  </script>
+
+</body>
+
+</html>
